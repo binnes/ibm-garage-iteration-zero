@@ -26,3 +26,6 @@ override.tf.json
 .temp/
 /workspace
 dist/
+
+# OS specific files
+.DS_Store
