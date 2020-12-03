@@ -73,6 +73,8 @@ fi
 echo "Initializing container ${CONTAINER_NAME} from ${DOCKER_IMAGE}"
 ${DOCKER_CMD} run -itd --name ${CONTAINER_NAME} \
    -v ${SRC_DIR}:/home/devops/src \
+   -v ~/.kube/config:/home/devops/.kube/config \
+   -v ~/.minikube:/home/devops/.minikube \
    -e TF_VAR_ibmcloud_api_key="${IBMCLOUD_API_KEY}" \
    -e TF_VAR_login_user="${LOGIN_USER}" \
    -e TF_VAR_login_password="${LOGIN_PASSWORD}" \

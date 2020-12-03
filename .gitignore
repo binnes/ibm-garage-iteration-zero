@@ -24,7 +24,7 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 .temp/
-/workspace
+workspaces
 dist/
 
 # OS specific files
