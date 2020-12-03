@@ -16,63 +16,80 @@ fi
 SCRIPT_DIR=$(dirname "$0")
 SRC_DIR="$(cd "${SCRIPT_DIR}"; pwd -P)"
 
-if [[ "${*:1}" =~ "--ocp" ]]; then
-  CLUSTER_MANAGEMENT="o"
-elif [[ "${*:1}" =~ "--ibm" ]]; then
-  CLUSTER_MANAGEMENT="i"
-else
-  CLUSTER_MANAGEMENT="x"
-  until [[ -n "${CLUSTER_MANAGEMENT}" ]] && [[ "${CLUSTER_MANAGEMENT}" =~ ^[oi]$ ]]; do
-    echo -n "Deploy Toolkit on (I)BM Cloud-managed IKS/ROKS or (O)penShift container platform? [I/o] "
-    read -r CLUSTER_MANAGEMENT
+## Add minikube certificate to docker container
 
-    if [[ -z "${CLUSTER_MANAGEMENT}" ]] || [[ "${CLUSTER_MANAGEMENT}" =~ [Ii] ]]; then
-      CLUSTER_MANAGEMENT="i"
-    elif [[ "${CLUSTER_MANAGEMENT}" =~ [Oo] ]]; then
-      CLUSTER_MANAGEMENT="o"
-    fi
-  done
-  echo ""
-fi
+sudo cp /home/devops/.minikube/certs/ca.pem /usr/local/share/ca-certificates/minikubeCA.crt
+sudo update-ca-certificates
 
-if [[ "${CLUSTER_MANAGEMENT}" == "i" ]]; then
-  ENVIRONMENT_TFVARS="${SRC_DIR}/settings/environment-ibmcloud.tfvars"
 
-  CLUSTER_NAME=$(grep -E "^cluster_name" "${ENVIRONMENT_TFVARS}" | sed -E "s/^cluster_name=\"(.*)\".*/\1/g")
-  RESOURCE_GROUP_NAME=$(grep -E "^resource_group_name" "${ENVIRONMENT_TFVARS}" | sed -E "s/^resource_group_name=\"(.*)\".*/\1/g")
-  NAME_PREFIX=$(grep -E "^name_prefix" "${ENVIRONMENT_TFVARS}" | sed -E "s/^name_prefix=\"(.*)\".*/\1/g")
-  CLUSTER_EXISTS=$(grep -E "^cluster_exists" "${ENVIRONMENT_TFVARS}" | sed -E "s/^cluster_exists=\"(.*)\".*/\1/g")
-  CLUSTER_TYPE=$(grep -E "^cluster_type" "${ENVIRONMENT_TFVARS}" | sed -E "s/^cluster_type=\"(.*)\".*/\1/g")
-  MANAGED_BY=" managed by \033[1;33mIBM Cloud\033[0m"
+# if [[ "${*:1}" =~ "--ocp" ]]; then
+#   CLUSTER_MANAGEMENT="o"
+# elif [[ "${*:1}" =~ "--ibm" ]]; then
+#   CLUSTER_MANAGEMENT="i"
+# else
+#   CLUSTER_MANAGEMENT="x"
+#   until [[ -n "${CLUSTER_MANAGEMENT}" ]] && [[ "${CLUSTER_MANAGEMENT}" =~ ^[oi]$ ]]; do
+#     echo -n "Deploy Toolkit on (I)BM Cloud-managed IKS/ROKS or (O)penShift container platform? [I/o] "
+#     read -r CLUSTER_MANAGEMENT
 
-  if [[ -z "${CLUSTER_NAME}" ]]; then
-    if [[ -n "${NAME_PREFIX}" ]]; then
-      CLUSTER_NAME="${NAME_PREFIX}-cluster"
-    else
-      CLUSTER_NAME="${RESOURCE_GROUP_NAME}-cluster"
-    fi
+#     if [[ -z "${CLUSTER_MANAGEMENT}" ]] || [[ "${CLUSTER_MANAGEMENT}" =~ [Ii] ]]; then
+#       CLUSTER_MANAGEMENT="i"
+#     elif [[ "${CLUSTER_MANAGEMENT}" =~ [Oo] ]]; then
+#       CLUSTER_MANAGEMENT="o"
+#     else
+#       CLUSTER_MANAGEMENT="k"
+#     fi
+#   done
+#   echo ""
+# fi
+CLUSTER_MANAGEMENT="k"
 
-    WRITE_CLUSTER_NAME="true"
-  fi
-else
-  ENVIRONMENT_TFVARS="${SRC_DIR}/settings/environment-ocp.tfvars"
+# if [[ "${CLUSTER_MANAGEMENT}" == "i" ]]; then
+#   ENVIRONMENT_TFVARS="${SRC_DIR}/settings/environment-ibmcloud.tfvars"
 
-  if [[ -f "${ENVIRONMENT_TFVARS}" ]]; then
-    CLUSTER_NAME=$(grep -E "^cluster_name" "${ENVIRONMENT_TFVARS}" | sed -E "s/^cluster_name=\"(.*)\".*/\1/g")
-    SERVER_URL=$(grep -E "^server_url" "${ENVIRONMENT_TFVARS}" | sed -E "s/^server_url=\"(.*)\".*/\1/g")
-  fi
+#   CLUSTER_NAME=$(grep -E "^cluster_name" "${ENVIRONMENT_TFVARS}" | sed -E "s/^cluster_name=\"(.*)\".*/\1/g")
+#   RESOURCE_GROUP_NAME=$(grep -E "^resource_group_name" "${ENVIRONMENT_TFVARS}" | sed -E "s/^resource_group_name=\"(.*)\".*/\1/g")
+#   NAME_PREFIX=$(grep -E "^name_prefix" "${ENVIRONMENT_TFVARS}" | sed -E "s/^name_prefix=\"(.*)\".*/\1/g")
+#   CLUSTER_EXISTS=$(grep -E "^cluster_exists" "${ENVIRONMENT_TFVARS}" | sed -E "s/^cluster_exists=\"(.*)\".*/\1/g")
+#   CLUSTER_TYPE=$(grep -E "^cluster_type" "${ENVIRONMENT_TFVARS}" | sed -E "s/^cluster_type=\"(.*)\".*/\1/g")
+#   MANAGED_BY=" managed by \033[1;33mIBM Cloud\033[0m"
 
-  if [[ -z "${CLUSTER_NAME}" ]]; then
-    CLUSTER_NAME="ocp-cluster"
-  fi
+#   if [[ -z "${CLUSTER_NAME}" ]]; then
+#     if [[ -n "${NAME_PREFIX}" ]]; then
+#       CLUSTER_NAME="${NAME_PREFIX}-cluster"
+#     else
+#       CLUSTER_NAME="${RESOURCE_GROUP_NAME}-cluster"
+#     fi
 
-  if [[ -z "${SERVER_URL}" ]]; then
-    SERVER_URL="${TF_VAR_server_url}"
-  fi
+#     WRITE_CLUSTER_NAME="true"
+#   fi
+# else
+#   ENVIRONMENT_TFVARS="${SRC_DIR}/settings/environment-ocp.tfvars"
 
-  CLUSTER_EXISTS="true"
-  CLUSTER_TYPE="ocp4"
-fi
+#   if [[ -f "${ENVIRONMENT_TFVARS}" ]]; then
+#     CLUSTER_NAME=$(grep -E "^cluster_name" "${ENVIRONMENT_TFVARS}" | sed -E "s/^cluster_name=\"(.*)\".*/\1/g")
+#     SERVER_URL=$(grep -E "^server_url" "${ENVIRONMENT_TFVARS}" | sed -E "s/^server_url=\"(.*)\".*/\1/g")
+#   fi
+
+#   if [[ -z "${CLUSTER_NAME}" ]]; then
+#     CLUSTER_NAME="ocp-cluster"
+#   fi
+
+#   if [[ -z "${SERVER_URL}" ]]; then
+#     SERVER_URL="${TF_VAR_server_url}"
+#   fi
+
+#   CLUSTER_EXISTS="true"
+#   CLUSTER_TYPE="ocp4"
+# fi
+
+
+
+CLUSTER_EXISTS="true"
+CLUSTER_TYPE="minikube"
+CLUSTER_NAME="minikube"
+SERVER_URL="https://192.168.64.2:8443"
+ENVIRONMENT_TFVARS="${SRC_DIR}/settings/environment-minikube.tfvars"
 
 WORKSPACE_DIR="${SRC_DIR}/workspaces/${CLUSTER_NAME}"
 
@@ -198,8 +215,10 @@ fi
 
 if [[ "o" == "${CLUSTER_MANAGEMENT}" ]]; then
 	STAGES_DIRECTORY="stages-ocp4"
-else
+elif [[ "i" == "${CLUSTER_MANAGEMENT}" ]]; then
 	STAGES_DIRECTORY="stages"
+else
+  STAGES_DIRECTORY="stages-minikube"
 fi
 
 cp "${SRC_DIR}/${STAGES_DIRECTORY}/variables.tf" "${WORKSPACE_DIR}"
