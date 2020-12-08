@@ -18,7 +18,7 @@ SRC_DIR="$(cd "${SCRIPT_DIR}"; pwd -P)"
 
 ## Add minikube certificate to docker container
 
-sudo cp /home/devops/.minikube/certs/ca.pem /usr/local/share/ca-certificates/minikubeCA.crt
+sudo cp /home/devops/.minikube/certs/rootCA_crt.pem /usr/local/share/ca-certificates/minikubeCA.crt
 sudo update-ca-certificates
 
 

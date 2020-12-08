@@ -218,5 +218,5 @@ variable "cluster_type_code" {
   variable "tls_secret" {
   type        = string
   description = ""
-  default     = "192-168-64-2-nip-io-tls"
+  default     = "ingress-tls"
 }

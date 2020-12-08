@@ -1,5 +1,5 @@
 module "dev_tools_argocd" {
-  source = "git::https://gitea.192.168.64.2.nip.io/brian/terraform-tools-argocd.git"
+  source = "git::https://gitea.192.168.64.2.nip.io/cloudNativeToolkit/terraform-tools-argocd.git"
 
   cluster_config_file = var.config_file_path
   cluster_type        = var.cluster_type_code
