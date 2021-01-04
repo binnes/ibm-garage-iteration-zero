@@ -194,7 +194,7 @@ variable "source_control_type" {
 variable "source_control_url" {
   type        = string
   description = "The url to the source control system"
-  default     = "https://gitea.192.168.64.2.nip.io"
+  default     = "https://gitea.${var.ingress_hostname}"
 }
 
 variable "config_file_path" {
@@ -212,7 +212,7 @@ variable "cluster_type_code" {
   variable "ingress_hostname" {
   type        = string
   description = ""
-  default     = "192.168.64.2.nip.io"
+#  default     = "192.168.64.2.nip.io"
 }
 
   variable "tls_secret" {
