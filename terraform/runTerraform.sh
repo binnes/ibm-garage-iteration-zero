@@ -88,7 +88,7 @@ CLUSTER_MANAGEMENT="k"
 CLUSTER_EXISTS="true"
 CLUSTER_TYPE="minikube"
 CLUSTER_NAME="minikube"
-SERVER_URL="https://192.168.64.2:8443"
+# SERVER_URL="https://192.168.64.2:8443"
 ENVIRONMENT_TFVARS="${SRC_DIR}/settings/environment-minikube.tfvars"
 
 WORKSPACE_DIR="${SRC_DIR}/workspaces/${CLUSTER_NAME}"
