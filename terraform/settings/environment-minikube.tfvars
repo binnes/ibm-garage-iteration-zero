@@ -11,6 +11,6 @@ vpc_zone_names="na"
 
 config_file_path = "/home/devops/.kube/config"
 cluster_type_code = "kubernetes"
-ingress_hostname = "192.168.64.2.nip.io"
+# ingress_hostname = "192.168.64.2.nip.io"
 tls_secret = "ingress-tls"
-server_url = "https://192.168.64.2:8443"
+# server_url = "https://192.168.64.2:8443"
